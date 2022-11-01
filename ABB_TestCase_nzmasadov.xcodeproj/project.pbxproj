@@ -96,8 +96,8 @@
 		77A02E29290C1942008EC657 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				77FB6DD7290EFED0008F7F43 /* HomeViewController.swift */,
 				772AF11E290B01990056319D /* MainNavigationController.swift */,
+				77FB6DD7290EFED0008F7F43 /* HomeViewController.swift */,
 				77A02E26290C1922008EC657 /* DetailViewController.swift */,
 				77A85EC2290FDBD0008F2EA7 /* FilterViewController.swift */,
 				777302E6290FDE07006D790B /* SelectViewController.swift */,

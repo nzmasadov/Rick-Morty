@@ -14,10 +14,10 @@ class HomeViewController: UIViewController {
     
     // MARK: Variables
     
-    var name: String? = nil
-    var status: String? = nil
-    var species: String? = nil
-    var gender: String? = nil
+    private var name: String? = nil
+    private var status: String? = nil
+    private var species: String? = nil
+    private var gender: String? = nil
     
     private lazy var vm = MainVM()
     private var charactersData: CharacterData?
@@ -133,6 +133,9 @@ class HomeViewController: UIViewController {
     
     @objc func moveFilterVC() {
         let vc = FilterViewController()
+        vc.savedGender = self.gender
+        vc.savedSpecies = self.species
+        vc.savedStatus = self.status
         vc.delegate = self
         self.present(vc, animated: true)
     }
@@ -270,25 +273,13 @@ extension HomeViewController: FilterCharactersDelegate {
         vc.dismiss(animated: true)
         
         self.characterItems = []
-        if status != "" {
-            self.status = status
-        }else {
-            self.status = nil
-        }
         
-        if species != "" {
-            self.species = species
-        }else {
-            self.species = nil
-        }
-        
-        if gender != "" {
-            self.gender = gender
-        }else {
-            self.gender = nil
-        }
+        status != "" ? (self.status = status) : (self.status = nil)
+        species != "" ? (self.species = species) : (self.species = nil)
+        gender != "" ? (self.gender = status) : (self.gender = nil)
 
         self.currentPage = 1
+        self.searchBar.searchTextField.text = ""
         
         vm.fetchFilteredCharacters(name: self.name, page: currentPage, status: self.status, species: self.species, gender: self.gender) { [weak self] chData in
             

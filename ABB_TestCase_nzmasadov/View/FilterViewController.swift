@@ -16,6 +16,10 @@ class FilterViewController: UIViewController {
     
     weak var delegate: FilterCharactersDelegate?
     
+    var savedStatus: String? = nil
+    var savedGender: String? = nil
+    var savedSpecies: String? = nil
+    
     private lazy var containerStackView: UIStackView = {
        let stack = UIStackView()
         
@@ -29,36 +33,39 @@ class FilterViewController: UIViewController {
     
     private lazy var statusField: UITextField = {
        let field = UITextField()
-        field.placeholder = "Select status"
+        field.placeholder = "Status"
         field.backgroundColor = .appBackGroundColor
         field.textAlignment = .center
         field.font = UIFont.systemFont(ofSize: 15)
         field.borderStyle = .roundedRect
         field.addTarget(self, action: #selector(chooseStatus), for: .allTouchEvents)
+        field.text = savedStatus ?? ""
         
         return field
     }()
     
     private lazy var genderField: UITextField = {
        let field = UITextField()
-        field.placeholder = "Select gender"
+        field.placeholder = "Gender"
         field.backgroundColor = .appBackGroundColor
         field.textAlignment = .center
         field.font = UIFont.systemFont(ofSize: 15)
         field.borderStyle = .roundedRect
         field.addTarget(self, action: #selector(chooseGender), for: .allTouchEvents)
+        field.text = savedGender ?? ""
 
         return field
     }()
     
     private lazy var speciesField: UITextField = {
        let field = UITextField()
-        field.placeholder = "Select species"
+        field.placeholder = "Species"
         field.backgroundColor = .appBackGroundColor
         field.textAlignment = .center
         field.font = UIFont.systemFont(ofSize: 15)
         field.borderStyle = .roundedRect
         field.addTarget(self, action: #selector(chooseSpecies), for: .allTouchEvents)
+        field.text = savedSpecies ?? ""
                 
         return field
     }()
@@ -86,6 +93,19 @@ class FilterViewController: UIViewController {
         return btn
     }()
     
+    private lazy var clearBtn: UIButton = {
+       let btn = UIButton()
+        
+        btn.setTitle("Clear", for: .normal)
+        btn.backgroundColor = .gray
+        btn.addTarget(self, action: #selector(clearTapped), for: .touchUpInside)
+        btn.clipsToBounds = true
+        btn.layer.cornerRadius = 16
+        
+        return btn
+    }()
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .appBackGroundColor
@@ -98,6 +118,7 @@ class FilterViewController: UIViewController {
         containerStackView.addArrangedSubview(speciesField)
         
         buttonsStackView.addArrangedSubview(filterBtn)
+        buttonsStackView.addArrangedSubview(clearBtn)
         
         setupUI()
     }
@@ -130,8 +151,14 @@ class FilterViewController: UIViewController {
     @objc func filterTapped() {
         
         delegate?.filerItems(vc: self, status: statusField.text!, species: speciesField.text!, gender: genderField.text!)
-        }
+    }
     
+    @objc func clearTapped() {
+        statusField.text = ""
+        speciesField.text = ""
+        genderField.text = ""
+    }
+        
     private func setupUI() {
         statusField.snp.makeConstraints { make in
             make.height.equalTo(42)
@@ -146,6 +173,10 @@ class FilterViewController: UIViewController {
         }
         
         filterBtn.snp.makeConstraints { make in
+            make.height.equalTo(42)
+        }
+        
+        clearBtn.snp.makeConstraints { make in
             make.height.equalTo(42)
         }
 
