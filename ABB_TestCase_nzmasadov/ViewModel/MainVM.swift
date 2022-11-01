@@ -1,10 +1,3 @@
-//
-//  MainVM.swift
-//  ABB_TestCase_nzmasadov
-//
-//  Created by Test Test on 28.10.22.
-//
-
 import Foundation
 import Alamofire
 

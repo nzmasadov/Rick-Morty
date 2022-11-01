@@ -1,10 +1,3 @@
-//
-//  Test2ViewController.swift
-//  ABB_TestCase_nzmasadov
-//
-//  Created by Nazim Asadov on 31.10.22.
-//
-
 import UIKit
 
 protocol SelectionTypeDelegate: AnyObject {
@@ -50,7 +43,6 @@ class SelectViewController: UIViewController, UIPickerViewDelegate, UIPickerView
     
     override func viewDidLoad() {
         super.viewDidLoad()
-    
         setupUI()
     }
     
@@ -71,8 +63,9 @@ class SelectViewController: UIViewController, UIPickerViewDelegate, UIPickerView
     }
     
     override func updateViewConstraints() {
-        self.view.frame.size.height = UIScreen.main.bounds.height - 150
-        self.view.frame.origin.y =  450
+//        self.view.frame.size.height = UIScreen.main.bounds.height - 150
+//        self.view.frame.origin.y =  450
+        self.view.frame.origin.y = UIScreen.main.bounds.height / 2
         self.view.roundCorners(corners: [.topLeft, .topRight], radius: 10.0)
         super.updateViewConstraints()
     }
@@ -110,15 +103,16 @@ class SelectViewController: UIViewController, UIPickerViewDelegate, UIPickerView
     
     private func setupUI() {
         view.backgroundColor = .appBackGroundColor
-        
+        isModalInPresentation = true
+
         pickerView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(40)
             make.centerX.equalTo(view.snp.centerX)
         }
         
         doneButton.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
-            make.right.equalTo(view.safeAreaLayoutGuide.snp.right).offset(-10)
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(15)
+            make.right.equalTo(view.safeAreaLayoutGuide.snp.right).offset(-15)
         }
     }
 }

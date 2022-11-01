@@ -1,10 +1,3 @@
-//
-//  TestViewController.swift
-//  ABB_TestCase_nzmasadov
-//
-//  Created by Nazim Asadov on 31.10.22.
-//
-
 import UIKit
 import SnapKit
 
@@ -33,6 +26,7 @@ class FilterViewController: UIViewController {
     
     private lazy var statusField: UITextField = {
        let field = UITextField()
+        
         field.placeholder = "Status"
         field.backgroundColor = .appBackGroundColor
         field.textAlignment = .center
@@ -46,6 +40,7 @@ class FilterViewController: UIViewController {
     
     private lazy var genderField: UITextField = {
        let field = UITextField()
+        
         field.placeholder = "Gender"
         field.backgroundColor = .appBackGroundColor
         field.textAlignment = .center
@@ -59,6 +54,7 @@ class FilterViewController: UIViewController {
     
     private lazy var speciesField: UITextField = {
        let field = UITextField()
+        
         field.placeholder = "Species"
         field.backgroundColor = .appBackGroundColor
         field.textAlignment = .center
@@ -105,7 +101,6 @@ class FilterViewController: UIViewController {
         return btn
     }()
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .appBackGroundColor
@@ -119,13 +114,13 @@ class FilterViewController: UIViewController {
         
         buttonsStackView.addArrangedSubview(filterBtn)
         buttonsStackView.addArrangedSubview(clearBtn)
-        
         setupUI()
     }
     
     override func updateViewConstraints() {
-        self.view.frame.size.height = UIScreen.main.bounds.height - 150
-        self.view.frame.origin.y =  450
+//        self.view.frame.size.height = UIScreen.main.bounds.height - 150
+        self.view.frame.origin.y = UIScreen.main.bounds.height / 2
+        
         self.view.roundCorners(corners: [.topLeft, .topRight], radius: 10.0)
         super.updateViewConstraints()
     }
@@ -160,6 +155,8 @@ class FilterViewController: UIViewController {
     }
         
     private func setupUI() {
+        self.isModalInPresentation = true
+
         statusField.snp.makeConstraints { make in
             make.height.equalTo(42)
         }

@@ -1,10 +1,3 @@
-//
-//  AppViewController.swift
-//  ABB_TestCase_nzmasadov
-//
-//  Created by Test Test on 28.10.22.
-//
-
 import Foundation
 import UIKit
 import SnapKit

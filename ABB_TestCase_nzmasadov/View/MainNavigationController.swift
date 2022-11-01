@@ -1,10 +1,3 @@
-//
-//  MainNavigationController.swift
-//  ABB_TestCase_nzmasadov
-//
-//  Created by Test Test on 27.10.22.
-//
-
 import Foundation
 import UIKit
 

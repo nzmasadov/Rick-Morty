@@ -1,10 +1,3 @@
-//
-//  CharacterCell.swift
-//  ABB_TestCase_nzmasadov
-//
-//  Created by Test Test on 28.10.22.
-//
-
 import UIKit
 import Kingfisher
 import SnapKit

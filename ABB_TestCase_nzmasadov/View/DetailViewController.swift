@@ -1,10 +1,3 @@
-//
-//  DetailViewController.swift
-//  ABB_TestCase_nzmasadov
-//
-//  Created by Test Test on 28.10.22.
-//
-
 import UIKit
 import SnapKit
 import Kingfisher
@@ -162,8 +155,8 @@ extension DetailViewController {
         
         containerStackView.snp.makeConstraints { make in
             make.top.equalTo(nameLbl.snp.bottom).offset(20)
-            make.left.equalTo(view.snp.left).offset(20)
-            make.right.equalTo(view.snp.right).offset(20)
+            make.left.equalTo(view.snp.left).offset(25)
+            make.right.equalTo(view.snp.right).offset(25)
         }
     }
 }
