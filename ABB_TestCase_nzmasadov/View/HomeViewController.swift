@@ -13,10 +13,16 @@ import Combine
 class HomeViewController: UIViewController {
     
     // MARK: Variables
+    
+    var name: String? = nil
+    var status: String? = nil
+    var species: String? = nil
+    var gender: String? = nil
+    
     private lazy var vm = MainVM()
     private var charactersData: CharacterData?
     private var info: Info?
-    private var characters: [CharacterItem] = [] {
+    private var characterItems: [CharacterItem] = [] {
         didSet {
             DispatchQueue.main.async {
                 self.collectionView.reloadData()
@@ -64,11 +70,12 @@ class HomeViewController: UIViewController {
         collectionView.refreshControl = refreshControl
         refreshControl.addTarget(self, action: #selector(refreshCharacters), for: .valueChanged)
         
-        vm.fetchCharacters(page: currentPage) { [weak self] charactersData in
-            self?.info = charactersData.info
-            guard let characterItems = charactersData.results else {return}
+        vm.fetchFilteredCharacters(name: self.name, page: currentPage, status: self.status, species: self.species, gender: self.gender) { [weak self] chData in
+            
+            self?.info = chData.info
+            guard let characterItems = chData.results else {return}
             characterItems.forEach({ item in
-                self?.characters.append(item)
+                self?.characterItems.append(item)
             })
         }
         
@@ -82,15 +89,24 @@ class HomeViewController: UIViewController {
     
     private func searchCharacters() {
         let trimmedText = searchBar.searchTextField.text?.filter({ !$0.isWhitespace}) ?? ""
-        vm.searchCharacters(name: trimmedText) { characterData in
-            self.characters = characterData.results ?? []
+        vm.fetchFilteredCharacters(name: trimmedText, page: self.currentPage, status: self.status, species: self.species, gender: self.gender) { chData in
+            self.info = chData.info
+            self.characterItems = chData.results ?? []
         }
     }
     
     @objc func refreshCharacters() {
         collectionView.refreshControl?.beginRefreshing()
-        DispatchQueue.main.async {
-            self.collectionView.reloadData()
+        self.characterItems = []
+        self.currentPage = 1
+
+        vm.fetchFilteredCharacters(name: nil, page: currentPage, status: nil, species: nil, gender: nil) { [weak self] chData in
+            
+            self?.info = chData.info
+            guard let characterItems = chData.results else {return}
+            characterItems.forEach({ item in
+                self?.characterItems.append(item)
+            })
         }
         collectionView.refreshControl?.endRefreshing()
     }
@@ -100,7 +116,6 @@ class HomeViewController: UIViewController {
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
     }
-    
     
     @objc func changeAppMode() {
         var isDarkMode = UserDefaults.standard.bool(forKey: "APP_MODE")
@@ -116,12 +131,19 @@ class HomeViewController: UIViewController {
         vm.savePhoneMode(id: "APP_MODE", isDark: isDarkMode)
     }
     
+    @objc func moveFilterVC() {
+        let vc = FilterViewController()
+        vc.delegate = self
+        self.present(vc, animated: true)
+    }
+    
     private func setupUI() {
         view.backgroundColor = .appBackGroundColor
         navigationItem.title = "Rick & Morty"
         
         self.navigationItem.rightBarButtonItems = [
             UIBarButtonItem(image: UIImage(named: "darkMode"), style: .plain, target: self, action: #selector(changeAppMode)),
+            UIBarButtonItem(image: UIImage(named: "filterBold"), style: .plain, target: self, action: #selector(moveFilterVC))
         ]
         
         collectionView.register(CharacterCell.self, forCellWithReuseIdentifier: "\(CharacterCell.self)")
@@ -149,19 +171,19 @@ class HomeViewController: UIViewController {
 
 extension HomeViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return characters.count
+        return characterItems.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "\(CharacterCell.self)", for: indexPath) as! CharacterCell
         
-        cell.configure(character: self.characters[indexPath.row])
+        cell.configure(character: self.characterItems[indexPath.row])
         return cell
     }
     
    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
        let vc = DetailViewController()
-       vc.characterItem = self.characters[indexPath.row]
+       vc.characterItem = self.characterItems[indexPath.row]
        vc.modalPresentationStyle = .overFullScreen
        self.navigationController?.pushViewController(vc, animated: true)
     }
@@ -192,11 +214,16 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout, UICollectionVi
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if info?.next != nil && indexPath.row == characters.count - 1 {
+        if info?.next != nil && indexPath.row == characterItems.count - 1 {
             currentPage += 1
-            vm.fetchCharacters(page: currentPage) { [weak self] charactersData in
-                self?.info = charactersData.info
-                self?.characters.append(contentsOf: charactersData.results ?? [])
+            
+            vm.fetchFilteredCharacters(name: self.name, page: currentPage, status: self.status, species: self.species, gender: self.gender) { [weak self] chData in
+                
+                self?.info = chData.info
+                guard let characterItems = chData.results else {return}
+                characterItems.forEach({ item in
+                    self?.characterItems.append(item)
+                })
             }
         }
     }
@@ -234,6 +261,42 @@ extension HomeViewController {
                     }
                 }
             }
+        }
+    }
+}
+
+extension HomeViewController: FilterCharactersDelegate {
+    func filerItems(vc: UIViewController, status: String, species: String, gender: String) {
+        vc.dismiss(animated: true)
+        
+        self.characterItems = []
+        if status != "" {
+            self.status = status
+        }else {
+            self.status = nil
+        }
+        
+        if species != "" {
+            self.species = species
+        }else {
+            self.species = nil
+        }
+        
+        if gender != "" {
+            self.gender = gender
+        }else {
+            self.gender = nil
+        }
+
+        self.currentPage = 1
+        
+        vm.fetchFilteredCharacters(name: self.name, page: currentPage, status: self.status, species: self.species, gender: self.gender) { [weak self] chData in
+            
+            self?.info = chData.info
+            guard let characterItems = chData.results else {return}
+            characterItems.forEach({ item in
+                self?.characterItems.append(item)
+            })
         }
     }
 }

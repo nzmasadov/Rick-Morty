@@ -18,8 +18,6 @@ class MainNavigationController: UINavigationController {
         navigationBar.prefersLargeTitles = true
         navigationBar.isTranslucent = true
         navigationBar.barStyle = .default
-//        navigationBar.barTintColor = .appBackGroundColor
-//        navigationBar.backgroundColor = .appBackGroundColor
         navigationBar.tintColor = .label
         
         viewControllers = [vc]
