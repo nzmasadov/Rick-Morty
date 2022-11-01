@@ -269,7 +269,7 @@ extension HomeViewController: FilterCharactersDelegate {
         
         status != "" ? (self.status = status) : (self.status = nil)
         species != "" ? (self.species = species) : (self.species = nil)
-        gender != "" ? (self.gender = status) : (self.gender = nil)
+        gender != "" ? (self.gender = gender) : (self.gender = nil)
 
         self.currentPage = 1
         self.searchBar.searchTextField.text = ""
